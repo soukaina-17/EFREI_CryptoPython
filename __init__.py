@@ -20,20 +20,13 @@ def encryptage(valeur):
     token = f.encrypt(valeur_bytes)  # Encrypt la valeur
     return f"Valeur encryptée : {token.decode()}"  # Retourne le token en str
 
-@app.route('/decrypt/', methods=['POST'])
-def decryptage():
+@app.route('/decrypt/<string:token>')
+def decryptage(token):
     try:
-        data = request.get_json()
-        encrypted_text = data.get('encrypted_text')
-
-        if not encrypted_text:
-            return jsonify({"error": "Champ 'encrypted_text' manquant"}), 400
-
-        decrypted_text = f.decrypt(encrypted_text.encode()).decode()
-        return jsonify({"decrypted_text": decrypted_text})
-
+        valeur_bytes = f.decrypt(token.encode())  # Déchiffrement
+        return f"Valeur décryptée : {valeur_bytes.decode()}"  # Retourne la valeur déchiffrée
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return f"Erreur lors du déchiffrement : {str(e)}"
                                                                                                                                                      
 if __name__ == "__main__":
   app.run(debug=True)
